@@ -14,7 +14,7 @@ namespace BarotraumaRadio
             {
                 currentStationUrl = value;
                 UpdateServerLastPlayed();
-                SendUrlToClient();
+                SendStateToClients();
             }
         }
 
@@ -25,16 +25,26 @@ namespace BarotraumaRadio
             File.WriteAllText(serverConfigPath, serializedConfig);
         }
 
-        public void SendUrlToClient()
+        public bool RadioEnabled
         {
-            IWriteMessage message = GameMain.LuaCs.Networking.Start("ChangeStationFromServer");
+            get => radioEnabled;
+            set
+            {
+                radioEnabled = value;
+                SendStateToClients();
+            }
+        }
+
+        public void SendStateToClients()
+        {
+            IWriteMessage message = GameMain.LuaCs.Networking.Start("ChangeStateFromServer");
 
             if (string.IsNullOrEmpty(ServerUrl))
             {
                 return;
             }
 
-            INetSerializableStruct dataStruct = new RadioDataStruct(item.ID, ServerUrl);
+            INetSerializableStruct dataStruct = new RadioDataStruct(item.ID, ServerUrl, RadioEnabled);
 
             dataStruct.Write(message);
             GameMain.LuaCs.Networking.Send(message);

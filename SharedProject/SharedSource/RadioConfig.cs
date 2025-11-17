@@ -4,6 +4,6 @@ using System.Text;
 
 namespace BarotraumaRadio
 {
-    public record ClientRadioConfig(int LastPlayedIndex, float Volume, bool ServerSync);
-    public record ServerRadioConfig(string LastPlayedUrl);
+    public record ClientRadioConfig(int LastPlayedIndex, float Volume, bool ServerSync, bool? IsPlaying = false);
+    public record ServerRadioConfig(string LastPlayedUrl, bool? IsPlaying = false);
 }

@@ -50,7 +50,7 @@ namespace BarotraumaRadio
             { 
                 return radioEnabled; 
             }
-            private set
+            set
             {
                 if (powered == null)
                 {
@@ -105,12 +105,21 @@ namespace BarotraumaRadio
         {
             if (ServerSync)
             {
-
                 IWriteMessage message = GameMain.LuaCs.Networking.Start("ChangeStationFromClient");
 
                 INetSerializableStruct dataStruct = new RadioDataStruct(item.ID, currentStationUrl);
 
                 dataStruct.Write(message);
+                GameMain.LuaCs.Networking.Send(message);
+            }
+        }
+
+        private void SendStateToServer()
+        {
+            if (ServerSync)
+            {
+                IWriteMessage message = GameMain.LuaCs.Networking.Start("ChangeStateFromClient");
+                message.WriteBoolean(RadioEnabled);
                 GameMain.LuaCs.Networking.Send(message);
             }
         }
@@ -226,9 +235,16 @@ namespace BarotraumaRadio
             GUI.AddMessage(message, Color.Orange, new Vector2(Item.WorldPositionX, Item.WorldPositionY + 15), Vector2.Zero);
         }
 
-        public void ChangeState()
+        public void SwitchState()
         {
             RadioEnabled = !RadioEnabled;
+            SendStateToServer();
+        }
+
+        public void ChangeState(bool radioEnabled)
+        {
+            RadioEnabled = radioEnabled;
+            SendStateToServer();
         }
 
         public override void ReceiveSignal(Signal signal, Connection connection)
@@ -240,7 +256,7 @@ namespace BarotraumaRadio
                 {
                     if (lastLeverValue != (value != 0f))
                     {
-                        RadioEnabled = value != 0f;
+                        ChangeState(value != 0f);
                         lastLeverValue = value != 0f;
                     }
                     break;

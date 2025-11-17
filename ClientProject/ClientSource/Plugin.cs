@@ -1,6 +1,4 @@
 ﻿using Barotrauma;
-using Barotrauma.Items.Components;
-using Barotrauma.Networking;
 using Microsoft.Xna.Framework;
 
 namespace BarotraumaRadio
@@ -18,30 +16,19 @@ namespace BarotraumaRadio
 
         private void SetClientSyncCallback()
         {
-            GameMain.LuaCs.Networking.Receive("ChangeStationFromServer", (object[] args) =>
+            GameMain.LuaCs.Networking.Receive("ChangeStateFromServer", (object[] args) =>
             {
-                IReadMessage message = (IReadMessage)args[0];
-                RadioDataStruct dataStruct = INetSerializableStruct.Read<RadioDataStruct>(message);
-                Item? item = Item.ItemList.FirstOrDefault(serverItem => serverItem.ID == dataStruct.RadioID);
-                if (item == null)
-                    return;
-                ItemComponent? component = item.Components.FirstOrDefault(c => c is Radio);
-                if (component != null && component is Radio radioComponent && radioComponent.ServerSync)
-                {
-                    if (radioComponent.currentStationUrl == dataStruct.ParamValue)
+                ExecuteCallBack(args, (Radio radioComponent, RadioDataStruct dataStruct) =>
                     {
-                        return;
+                        radioComponent.RadioEnabled = dataStruct.BooleanParamValue ?? radioComponent.RadioEnabled;
+                        if (radioComponent.currentStationUrl == dataStruct.StringParamValue || !radioComponent.ServerSync)
+                        {
+                            return;
+                        }
+                        radioComponent.currentStationUrl = dataStruct.StringParamValue ?? radioComponent.currentStationUrl;
+                        radioComponent.ChangeStation();
                     }
-                    radioComponent.currentStationUrl = dataStruct.ParamValue!;
-                    radioComponent.ChangeStation();
-                }
-            });
-
-            GameMain.LuaCs.Networking.Receive("SendStringFromServer", (object[] args) =>
-            {
-                IReadMessage message = (IReadMessage)args[0];
-                string data = message.ReadString();
-                LuaCsSetup.PrintCsMessage(data);
+                );
             });
         }
 
@@ -141,7 +128,7 @@ namespace BarotraumaRadio
                         {
                             return null;
                         }
-                        component.ChangeState();
+                        component.SwitchState();
                     }
                     catch (Exception e)
                     {

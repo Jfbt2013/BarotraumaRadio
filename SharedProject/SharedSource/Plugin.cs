@@ -1,4 +1,6 @@
 ﻿using Barotrauma;
+using Barotrauma.Items.Components;
+using Barotrauma.Networking;
 using HarmonyLib;
 using System.Runtime.CompilerServices;
 
@@ -37,6 +39,23 @@ namespace BarotraumaRadio
 
         public void Dispose()
         {
+        }
+
+        public void ExecuteCallBack(object[] args, Action<Radio, RadioDataStruct> callback)
+        {
+            IReadMessage message = (IReadMessage)args[0];
+            RadioDataStruct dataStruct = INetSerializableStruct.Read<RadioDataStruct>(message);
+            Item? item = Item.ItemList.FirstOrDefault(serverItem => serverItem.ID == dataStruct.RadioID);
+
+            if (item == null)
+                return;
+
+            ItemComponent? component = item.Components.FirstOrDefault(c => c is Radio);
+
+            if (component != null && component is Radio radioComponent)
+            {
+                callback(radioComponent, dataStruct);
+            }
         }
     }
 }
