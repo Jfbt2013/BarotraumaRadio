@@ -65,6 +65,7 @@ namespace BarotraumaRadio
                 }
                 if ((!powered!.HasPower || !value) && radioEnabled)
                 {
+                    DisplayMessage($"Turned Off");
                     radioEnabled = false;
                     Stop();
                 }
@@ -73,6 +74,7 @@ namespace BarotraumaRadio
                     return;
                 }
                 radioEnabled = value;
+                DisplayMessage($"Turned On");
                 PlayAsync();
             }
         }
