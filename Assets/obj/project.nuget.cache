@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "SQz7Es3TYpU=",
+  "dgSpecHash": "HRousCdi7Oc=",
   "success": true,
-  "projectFilePath": "C:\\Programming\\Projects\\C#\\BarotraumaRadioMod\\VSProjectSkeleton\\Assets\\Assets.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/mnt/fhbt/baroradio/BarotraumaRadioLinux/Assets/Assets.csproj",
+  "expectedPackageFiles": [
+    "/home/jan/.nuget/packages/microsoft.netcore.app.ref/6.0.36/microsoft.netcore.app.ref.6.0.36.nupkg.sha512",
+    "/home/jan/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.36/microsoft.aspnetcore.app.ref.6.0.36.nupkg.sha512"
+  ],
   "logs": []
 }

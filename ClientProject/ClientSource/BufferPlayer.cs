@@ -3,6 +3,7 @@ using LibVLCSharp.Shared;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
+
 namespace BarotraumaRadio
 {
     public class BufferPlayer : IDisposable
@@ -16,8 +17,20 @@ namespace BarotraumaRadio
         public BufferPlayer()
         {
             string modPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
-            string vlcPath = Path.Combine(modPath, "../../../Content/libvlc/win-x64");
+            string vlcPath = "";
 
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux)){
+                vlcPath=Path.Combine(modPath, "../../../Content/libvlc/linux");
+                LuaCsSetup.PrintCsMessage("linux moment");
+            }
+
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
+                LuaCsSetup.PrintCsMessage("windows moment");
+                vlcPath = Path.Combine(modPath, "../../../Content/libvlc/win-x64");
+            }
+
+            LuaCsSetup.PrintCsMessage(vlcPath);
+            
             if (!Directory.Exists(vlcPath))
             {
                 LuaCsSetup.PrintCsError($"Failed to find path for VLC player at: {vlcPath}");

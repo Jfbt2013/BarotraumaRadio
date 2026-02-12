@@ -6,6 +6,21 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+
+  <Import Project="..\SharedProject\SharedProject.projitems" Label="Shared" />
+  <Import Project="../Build.props" />
+  
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DefineConstants>TRACETRACE;CLIENT;LINUX</DefineConstants>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DefineConstants>TRACETRACE;CLIENT;LINUX</DefineConstants>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  
     <ItemGroup>
       <PackageReference Include="LibVLCSharp" Version="3.9.4" />
     </ItemGroup>
